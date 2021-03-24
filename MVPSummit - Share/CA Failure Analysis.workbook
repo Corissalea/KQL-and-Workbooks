@@ -1,0 +1,286 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 1,
+      "content": {
+        "json": "# Conditional Access Block Analysis"
+      },
+      "name": "text - 0"
+    },
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "cd0fa55c-f168-46ca-af6e-68b4166c91df",
+            "version": "KqlParameterItem/1.0",
+            "name": "TimeWindow",
+            "label": "How long Ago?",
+            "type": 4,
+            "value": {
+              "durationMs": 64195200000,
+              "endTime": "2021-12-15T00:18:00.000Z"
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ],
+              "allowCustom": true
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 8"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "### Distinct Count of Users"
+      },
+      "customWidth": "50",
+      "name": "text - 4",
+      "styleSettings": {
+        "maxWidth": "50%"
+      }
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "### Total Sign-In requests"
+      },
+      "customWidth": "50",
+      "name": "text - 5",
+      "styleSettings": {
+        "maxWidth": "50%"
+      }
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n| where ConditionalAccessStatus == \"failure\"\r\n| extend App = AppDisplayName\r\n| summarize DistinctUsers=dcount(Id) by AppDisplayName",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 64195200000
+        },
+        "timeContextFromParameter": "TimeWindow",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart"
+      },
+      "customWidth": "50",
+      "name": "query - 1",
+      "styleSettings": {
+        "maxWidth": "50%"
+      }
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n| where ConditionalAccessStatus == \"failure\"\r\n| summarize TotalRequests=count() by AppDisplayName",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 64195200000
+        },
+        "timeContextFromParameter": "TimeWindow",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "piechart"
+      },
+      "customWidth": "50",
+      "name": "query - 3",
+      "styleSettings": {
+        "maxWidth": "50%"
+      }
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n| where ConditionalAccessStatus == \"failure\"\r\n| summarize TotalSignIns=count() by AppDisplayName,bin(TimeGenerated,15m)",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 64195200000
+        },
+        "timeContextFromParameter": "TimeWindow",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "categoricalbar",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "TotalSignIns",
+              "formatter": 0,
+              "formatOptions": {
+                "aggregation": "Sum"
+              }
+            }
+          ]
+        },
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "AppDisplayName",
+            "formatter": 1
+          },
+          "leftContent": {
+            "columnMatch": "TotalSignIns",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "graphSettings": {
+          "type": 0,
+          "topContent": {
+            "columnMatch": "AppDisplayName",
+            "formatter": 1
+          },
+          "centerContent": {
+            "columnMatch": "TotalSignIns",
+            "formatter": 1,
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        }
+      },
+      "name": "query - 5"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n| where ConditionalAccessStatus == \"failure\"\r\n| summarize TotalSignIns=count(), DistinctUsers=dcount(Id) by AppDisplayName,AppId,bin(TimeGenerated,5m)",
+        "size": 0,
+        "timeContext": {
+          "durationMs": 64195200000
+        },
+        "timeContextFromParameter": "TimeWindow",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "visualization": "table",
+        "gridSettings": {
+          "formatters": [
+            {
+              "columnMatch": "TotalSignIns",
+              "formatter": 0,
+              "formatOptions": {
+                "aggregation": "Sum"
+              }
+            }
+          ]
+        },
+        "tileSettings": {
+          "showBorder": false,
+          "titleContent": {
+            "columnMatch": "AppDisplayName",
+            "formatter": 1
+          },
+          "leftContent": {
+            "columnMatch": "TotalSignIns",
+            "formatter": 12,
+            "formatOptions": {
+              "palette": "auto"
+            },
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        },
+        "graphSettings": {
+          "type": 0,
+          "topContent": {
+            "columnMatch": "AppDisplayName",
+            "formatter": 1
+          },
+          "centerContent": {
+            "columnMatch": "TotalSignIns",
+            "formatter": 1,
+            "numberFormat": {
+              "unit": 17,
+              "options": {
+                "maximumSignificantDigits": 3,
+                "maximumFractionDigits": 2
+              }
+            }
+          }
+        }
+      },
+      "name": "query - 5 - Copy"
+    }
+  ],
+  "fallbackResourceIds": [
+    "/subscriptions/82b483e7-5794-417a-a8a8-6538fe6991ab/resourcegroups/ces2021_rg/providers/microsoft.operationalinsights/workspaces/ces-2021-log-analytics-workspace"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
