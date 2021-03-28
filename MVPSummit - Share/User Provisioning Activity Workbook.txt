@@ -188,7 +188,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "AuditLogs\r\n| where AADOperationType  == \"Add\"\r\n| where Category == \"UserManagement\"\r\n| where Result == \"success\"\r\n//| project TimeGenerated\r\n| summarize count() by bin (TimeGenerated,1d),AADOperationType",
+        "query": "AuditLogs\r\n| where AADOperationType  == \"Add\"\r\n| where Category == \"UserManagement\"\r\n| where Result == \"success\"\r\n| summarize count() by bin (TimeGenerated,1d)",
         "size": 0,
         "timeContext": {
           "durationMs": 0
@@ -208,7 +208,7 @@
       "type": 3,
       "content": {
         "version": "KqlItem/1.0",
-        "query": "AuditLogs\r\n| where AADOperationType  == \"Add\" or AADOperationType == \"Update\"\r\n| where Category == \"UserManagement\"\r\n| where Result == \"failure\"\r\n| summarize count() by bin (TimeGenerated,5m),ResultReason",
+        "query": "AuditLogs\r\n| where AADOperationType  == \"Add\" or AADOperationType == \"Update\"\r\n| where Category == \"UserManagement\"\r\n| where Result == \"failure\"\r\n| summarize count() by ResultReason",
         "size": 0,
         "timeContext": {
           "durationMs": 0
