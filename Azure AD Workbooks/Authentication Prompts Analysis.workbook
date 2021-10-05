@@ -1,0 +1,1114 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "a73b569b-6b9a-4980-9def-c8ee8add51f0",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workbook",
+            "type": 5,
+            "isRequired": true,
+            "value": "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa/resourcegroups/woodgrove-rg/providers/microsoft.operationalinsights/workspaces/woodgrove-loganalyiticsworkspace",
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "showDefault": false
+            }
+          },
+          {
+            "id": "3db1324f-e565-4b23-9992-46fe4ba3909d",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "isRequired": true,
+            "value": "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa",
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false,
+              "showDefault": false
+            }
+          },
+          {
+            "id": "e4eea1ae-1110-4aa6-b614-f943a586f90f",
+            "version": "KqlParameterItem/1.0",
+            "name": "Guide",
+            "type": 10,
+            "typeSettings": {
+              "additionalResourceOptions": []
+            },
+            "jsonData": "[\r\n    {\"value\": \"On\", \"label\": \"On\", \"selected\":true},\r\n    {\"value\": \"Off\", \"label\": \"Off\"}\r\n]"
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 4"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "## Guide to using this workbook\r\n\r\nUse this workbook to better understand how frequent users in your tenant are getting prompted for reauthentication and gain insights on how to reduce multi-factor (MFA) prompts based on the devices, authentication methods and applications users are using.\r\n\r\n### Data\r\n\r\nCount of authentication methods excludes previously satisfied and unknown authentication methods\t\r\n"
+      },
+      "name": "text - 18"
+    },
+    {
+      "type": 12,
+      "content": {
+        "version": "NotebookGroup/1.0",
+        "groupType": "editable",
+        "items": [
+          {
+            "type": 9,
+            "content": {
+              "version": "KqlParameterItem/1.0",
+              "parameters": [
+                {
+                  "id": "4ce4eed0-580a-4ec2-9043-3872fafcdd0f",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "Time",
+                  "type": 4,
+                  "isRequired": true,
+                  "value": {
+                    "durationMs": 604800000
+                  },
+                  "typeSettings": {
+                    "selectableValues": [
+                      {
+                        "durationMs": 3600000
+                      },
+                      {
+                        "durationMs": 86400000
+                      },
+                      {
+                        "durationMs": 604800000
+                      },
+                      {
+                        "durationMs": 2592000000
+                      },
+                      {
+                        "durationMs": 7776000000
+                      }
+                    ]
+                  },
+                  "timeContext": {
+                    "durationMs": 86400000
+                  }
+                },
+                {
+                  "id": "d90371c2-48fc-460f-8368-c81c220a37a7",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "AuthMethod",
+                  "type": 2,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\r\n    { \"value\":\"Password\", \"label\":\"Password\" },\r\n    { \"value\":\"Previously satisfied\", \"label\":\"Previously Satisfied\" },\r\n    { \"value\":\"X.509 Certificate\", \"label\":\"X.509 Certificate\" },\r\n    { \"value\":\"Mobile app notification\", \"label\":\"Mobile App Notification\"},\r\n    { \"value\":\"Text message\", \"label\":\"Text Message\" },\r\n    { \"value\":\"Phone call approval (Authentication phone)\", \"label\":\"Phone Call Approval\" },\r\n    { \"value\":\"Windows Hello for Business\", \"label\":\"Windows Hello for Business\"},\r\n    { \"value\":\"OAUTH verification code\", \"label\":\"Passwordless\"},\r\n    { \"value\":\"Phone call approval (Office phone)\", \"label\":\"Office Phone Call Approval\"},\r\n    { \"value\":\"FIDO2 security key\", \"label\":\"FIDO2 Security Key\" },\r\n    { \"value\":\"Temporary Access Pass\", \"label\":\"Temporary Access Pass\" },\r\n    { \"value\":\"Passwordless phone sign-in\", \"label\":\"Passwordless Phone SignIn\",\"selected\":true }\r\n]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "timeContextFromParameter": "Time",
+                  "defaultValue": "value::all"
+                },
+                {
+                  "id": "30e85f5a-a73e-4b9e-a5bd-1109f34faa0f",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "OS",
+                  "label": "OperatingSystem",
+                  "type": 2,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\r\n    { \"value\":\"Windows 10\", \"label\":\"Windows 10\"},\r\n    { \"value\":\"Windows 8\", \"label\":\"Windows 8\" },\r\n    { \"value\":\"Windows\", \"label\":\"Windows\" },\r\n    { \"value\":\"iOS 14\", \"label\":\"iOS 14\" },\r\n    { \"value\":\"MacOS\", \"label\":\"MacOS\" },\r\n    { \"value\":\"\", \"label\":\"Unknown\" },\r\n    { \"value\":\"Android\", \"label\":\"Android\", \"selected\":true }\r\n]",
+                  "timeContextFromParameter": "Time",
+                  "defaultValue": "value::all"
+                },
+                {
+                  "id": "d0572ef9-28b3-43b2-94aa-2a2550ac799b",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "DeviceState",
+                  "type": 2,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\r\n    { \"value\":\"Unmanaged\", \"label\":\"Unmanaged\" },\r\n    { \"value\":\"Azure AD registered\", \"label\":\"Azure AD registered\" },\r\n     { \"value\":\"Azure AD joined\", \"label\":\"Azure AD Joined\" },\r\n    { \"value\":\"Hybrid Azure AD joined\", \"label\":\"Hybrid Azure AD joined\", \"selected\":true }\r\n]",
+                  "timeContext": {
+                    "durationMs": 86400000
+                  },
+                  "defaultValue": "value::all",
+                  "value": [
+                    "value::all"
+                  ]
+                },
+                {
+                  "id": "6df9b54e-5fdd-43bd-8686-ec78f74383ab",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "App",
+                  "type": 1,
+                  "description": "Default value is All apps",
+                  "timeContext": {
+                    "durationMs": 2592000000
+                  },
+                  "timeContextFromParameter": "Time",
+                  "defaultValue": "value::all"
+                },
+                {
+                  "id": "adfbe329-1f53-4edb-ba08-6e9002bf9be0",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "User",
+                  "type": 1,
+                  "description": "Default value is All users",
+                  "timeContext": {
+                    "durationMs": 2592000000
+                  },
+                  "timeContextFromParameter": "Time"
+                },
+                {
+                  "id": "77c07866-4973-42d5-b697-446f44da5724",
+                  "version": "KqlParameterItem/1.0",
+                  "name": "SigninStatus",
+                  "type": 2,
+                  "multiSelect": true,
+                  "quote": "'",
+                  "delimiter": ",",
+                  "value": [
+                    "value::all"
+                  ],
+                  "typeSettings": {
+                    "additionalResourceOptions": [
+                      "value::all"
+                    ],
+                    "showDefault": false
+                  },
+                  "jsonData": "[\r\n    { \"value\":\"Success\", \"label\":\"Success\" },\r\n    { \"value\":\"Failure\", \"label\":\"Failure\", \"selected\":true }\r\n]",
+                  "timeContext": {
+                    "durationMs": 2592000000
+                  },
+                  "timeContextFromParameter": "Time",
+                  "defaultValue": "value::all"
+                }
+              ],
+              "style": "pills",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces"
+            },
+            "customWidth": "100",
+            "name": "parameters - 13"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Authentication Prompts by Authentication Method\r\n"
+            },
+            "name": "text - 13"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize AuthMethCount = count(AuthMethod) by AuthMethod\r\n",
+              "size": 3,
+              "showAnalytics": true,
+              "title": "Authentication Prompts by Method",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "piechart",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "AuthMethCount",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "AuthMethCount",
+                  "sortOrder": 2
+                }
+              ],
+              "chartSettings": {
+                "xAxis": "AuthMethod",
+                "yAxis": [
+                  "AuthMethCount"
+                ],
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Mobile app notification",
+                    "color": "orange"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"\"\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize AuthMethCount = count(AuthMethod) by bin (TimeGenerated, 1d), AuthMethod",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Daily Authentication Prompts by Method",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "unstackedbar",
+              "chartSettings": {
+                "yAxis": [
+                  "AuthMethCount"
+                ],
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Mobile app notification",
+                    "color": "orange"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 0 - Copy - Copy - Copy"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Authentication Prompts by Device\r\n"
+            },
+            "name": "text - 13 - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and  AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by OS\r\n",
+              "size": 3,
+              "showAnalytics": true,
+              "title": "Authentication Prompts by Operating System",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "piechart",
+              "chartSettings": {
+                "yAxis": [
+                  "Count"
+                ],
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Windows 10",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "iOS 14",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Android",
+                    "color": "magenta"
+                  },
+                  {
+                    "seriesName": "MacOS",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "Windows 8",
+                    "color": "redDark"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 0 - Copy - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"\"\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by bin (TimeGenerated, 1h), OS\r\n",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Hourly Authentication Prompts by Operating System",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "barchart",
+              "chartSettings": {
+                "yAxis": [
+                  "Count"
+                ],
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Windows 10",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "iOS 14",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "MacOs",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Android",
+                    "color": "purpleDark"
+                  },
+                  {
+                    "seriesName": "Windows 8",
+                    "color": "red"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"\"\r\n|where SuccessfulSignin = true\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by DeviceState",
+              "size": 3,
+              "showAnalytics": true,
+              "title": "Authentication Prompts by Device State",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "piechart",
+              "tileSettings": {
+                "showBorder": false,
+                "titleContent": {
+                  "columnMatch": "DeviceState",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "Count",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumSignificantDigits": 3,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 0"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"\"\r\n|where SuccessfulSignin = true\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by bin(TimeGenerated, 1h), DeviceState",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Hourly Authentication Prompts by Device State",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "barchart",
+              "tileSettings": {
+                "showBorder": false,
+                "titleContent": {
+                  "columnMatch": "DeviceState",
+                  "formatter": 1
+                },
+                "leftContent": {
+                  "columnMatch": "Count",
+                  "formatter": 12,
+                  "formatOptions": {
+                    "palette": "auto"
+                  },
+                  "numberFormat": {
+                    "unit": 17,
+                    "options": {
+                      "maximumSignificantDigits": 3,
+                      "maximumFractionDigits": 2
+                    }
+                  }
+                }
+              },
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Unmanaged",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "Hybrid Azure AD joined",
+                    "color": "turquoise"
+                  },
+                  {
+                    "seriesName": "Azure AD registered",
+                    "color": "magenta"
+                  }
+                ]
+              }
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 0 - Copy"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Authentication Prompts by User\r\nTip: To investigate the top prompted users, filer this report by user\r\n"
+            },
+            "name": "text - 13 - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState})\r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by UserDisplayName\r\n\r\n",
+              "size": 3,
+              "showAnalytics": true,
+              "title": "Top Prompted Users",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "piechart",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Other",
+                    "label": "All Other Users",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "On-Premises Directory Synchronization Service Account",
+                    "color": "gray"
+                  }
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 13 - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"\"\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n| summarize CountPrompts = count(AuthMethod) by bin(TimeGenerated,1h), UserDisplayName\r\n\r\n",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Hourly Authentication Prompts by User",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "barchart",
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Other",
+                    "label": "All Other Users",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "On-Premises Directory Synchronization Service Account",
+                    "color": "gray"
+                  }
+                ]
+              }
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 13 - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and  AuthMethod != \"\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState})\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n| summarize CountPrompts = count(AuthMethod) by UserDisplayName\r\n| summarize percentiles(CountPrompts,5,50,80)\r\n| project  Percent50 = percentile_CountPrompts_50, Percent80 = percentile_CountPrompts_80",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Percentiles of Authentication Prompts per User ",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Percent50",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "30ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "Percent80",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "30ch"
+                    }
+                  }
+                ],
+                "filter": true
+              },
+              "tileSettings": {
+                "showBorder": false
+              },
+              "chartSettings": {
+                "yAxis": [
+                  "Count"
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "\r\nlet Percentile80 = toscalar(SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and  AuthMethod != \"\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState})\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| summarize percentile(CountPrompts,80));\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState})\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n| summarize CountPrompts = count(AuthMethod) by UserDisplayName\r\n| where CountPrompts > Percentile80\r\n| order by CountPrompts desc\r\n\r\n\r\n\r\n",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Users in 80th Percentile",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "UserDisplayName",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "70ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "CountPrompts",
+                    "formatter": 2,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "20ch"
+                    }
+                  }
+                ],
+                "filter": true
+              }
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 13",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          },
+          {
+            "type": 12,
+            "content": {
+              "version": "NotebookGroup/1.0",
+              "groupType": "editable",
+              "items": [
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|mv-expand ParsedFields2 = parse_json(AuthenticationRequirementPolicies)\r\n    |extend AuthReqPolicy = ParsedFields2.detail\r\n    |extend AuthPolicy = tostring(AuthReqPolicy)\r\n|where AuthMethod != \"\"\r\n//|where SuccessfulSignin = true\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by AuthPolicy\r\n",
+                    "size": 3,
+                    "showAnalytics": true,
+                    "title": "Authentication Prompts by Policy",
+                    "timeContext": {
+                      "durationMs": 604800000
+                    },
+                    "timeContextFromParameter": "Time",
+                    "showExportToExcel": true,
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "crossComponentResources": [
+                      "{Workbook}"
+                    ],
+                    "visualization": "piechart",
+                    "tileSettings": {
+                      "titleContent": {
+                        "columnMatch": "AuthPolicy",
+                        "formatter": 1
+                      },
+                      "leftContent": {
+                        "columnMatch": "Count",
+                        "formatter": 12,
+                        "formatOptions": {
+                          "palette": "auto"
+                        },
+                        "numberFormat": {
+                          "unit": 17,
+                          "options": {
+                            "maximumSignificantDigits": 3,
+                            "maximumFractionDigits": 2
+                          }
+                        }
+                      },
+                      "showBorder": false
+                    },
+                    "chartSettings": {
+                      "createOtherGroup": 10
+                    }
+                  },
+                  "customWidth": "35",
+                  "showPin": true,
+                  "name": "query - 0 - Copy"
+                },
+                {
+                  "type": 3,
+                  "content": {
+                    "version": "KqlItem/1.0",
+                    "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|mv-expand ParsedFields2 = parse_json(AuthenticationRequirementPolicies)\r\n    |extend AuthReqPolicy = ParsedFields2.detail\r\n    |extend AuthPolicy = tostring(AuthReqPolicy)\r\n|where AuthMethod != \"\"\r\n|where SuccessfulSignin = true\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState})  \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n|summarize Count = count(AuthMethod) by bin(TimeGenerated,1h), AuthPolicy\r\n",
+                    "size": 0,
+                    "title": "Hourly Prompts by Authentication Policy",
+                    "timeContext": {
+                      "durationMs": 604800000
+                    },
+                    "timeContextFromParameter": "Time",
+                    "queryType": 0,
+                    "resourceType": "microsoft.operationalinsights/workspaces",
+                    "crossComponentResources": [
+                      "{Workbook}"
+                    ],
+                    "visualization": "barchart",
+                    "tileSettings": {
+                      "titleContent": {
+                        "columnMatch": "AuthPolicy",
+                        "formatter": 1
+                      },
+                      "leftContent": {
+                        "columnMatch": "Count",
+                        "formatter": 12,
+                        "formatOptions": {
+                          "palette": "auto"
+                        },
+                        "numberFormat": {
+                          "unit": 17,
+                          "options": {
+                            "maximumSignificantDigits": 3,
+                            "maximumFractionDigits": 2
+                          }
+                        }
+                      },
+                      "showBorder": false
+                    }
+                  },
+                  "customWidth": "65",
+                  "name": "query - 0 - Copy - Copy"
+                }
+              ]
+            },
+            "name": "group - 13"
+          },
+          {
+            "type": 1,
+            "content": {
+              "json": "## Authentication prompts by Application\r\nTip: To investigate the top prompted apps, filter this report by AppID and look at “Authentication policy” graph to understand what triggers multiple authentication requests."
+            },
+            "name": "text - 13 - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| order by CountPrompts desc\r\n",
+              "size": 3,
+              "showAnalytics": true,
+              "title": "Top Prompted Applications",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "piechart",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "CountPrompts",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "CountPrompts",
+                  "sortOrder": 2
+                }
+              ],
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Azure Portal",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "My Apps",
+                    "color": "blueDark"
+                  },
+                  {
+                    "seriesName": "Microsoft Graph PowerShell",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Microsoft Teams Web Client",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "Microsoft Authenticator App",
+                    "color": "magenta"
+                  },
+                  {
+                    "seriesName": "Other",
+                    "label": "All Other Apps",
+                    "color": "purple"
+                  }
+                ]
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 13 - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend DeviceState = case(DeviceDetail[\"trustType\"] == \"\", \"Unmanaged\", DeviceDetail[\"trustType\"])\r\n|extend OperatingSystem = ParsedFields2.operatingSystem\r\n|extend OS = tostring(OperatingSystem)\r\n|where AuthMethod != \"\"\r\n//|where SuccessfulSignin = true \r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" //and AuthMethod != \"Password\"\r\n|where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n|where OS in ({OS}) or '*' in ({OS})  \r\n|where DeviceState in ({DeviceState}) or '*' in ({DeviceState}) \r\n| where \"{User:escape}\" == \"All users\" or UserDisplayName contains \"{User:escape}\"\r\n| where \"{App:escape}\" == \"All apps\" or AppDisplayName contains \"{App:escape}\"\r\n|extend Status = ParsedFields.succeeded\r\n|extend SigninStatus = case(Status == \"true\", \"Success\", \"Failure\") \r\n|where SigninStatus in ({SigninStatus}) or '*' in ({SigninStatus})\r\n| summarize CountPrompts = count(AuthMethod) by bin(TimeGenerated, 1h), AppDisplayName\r\n",
+              "size": 0,
+              "showAnalytics": true,
+              "title": "Hourly Authentication Prompts by Application",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "barchart",
+              "gridSettings": {
+                "sortBy": [
+                  {
+                    "itemKey": "CountPrompts",
+                    "sortOrder": 2
+                  }
+                ]
+              },
+              "sortBy": [
+                {
+                  "itemKey": "CountPrompts",
+                  "sortOrder": 2
+                }
+              ],
+              "chartSettings": {
+                "seriesLabelSettings": [
+                  {
+                    "seriesName": "Azure Portal",
+                    "color": "blue"
+                  },
+                  {
+                    "seriesName": "My Apps",
+                    "color": "blueDark"
+                  },
+                  {
+                    "seriesName": "Microsoft Graph PowerShell",
+                    "color": "orange"
+                  },
+                  {
+                    "seriesName": "Microsoft Teams Web Client",
+                    "color": "gray"
+                  },
+                  {
+                    "seriesName": "Microsoft Authenticator App",
+                    "color": "greenDark"
+                  },
+                  {
+                    "seriesName": "Other",
+                    "label": "All Other Apps"
+                  }
+                ]
+              }
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 13 - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and  AuthMethod != \"\"\r\n| where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| summarize percentiles(CountPrompts,50,80)\r\n| project  Percent50 = percentile_CountPrompts_50, Percent80 = percentile_CountPrompts_80\r\n",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Percentiles of  Authentication Prompts per App ",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "visualization": "table",
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "Percent50",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "30ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "Percent80",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "30ch"
+                    }
+                  }
+                ],
+                "filter": true
+              },
+              "tileSettings": {
+                "showBorder": false
+              },
+              "chartSettings": {
+                "yAxis": [
+                  "Count"
+                ],
+                "ySettings": {
+                  "numberFormatSettings": {
+                    "unit": 0,
+                    "options": {
+                      "style": "decimal",
+                      "useGrouping": true
+                    }
+                  }
+                }
+              }
+            },
+            "customWidth": "35",
+            "showPin": true,
+            "name": "query - 0 - Copy - Copy - Copy - Copy - Copy - Copy"
+          },
+          {
+            "type": 3,
+            "content": {
+              "version": "KqlItem/1.0",
+              "query": "\r\nlet Percentile80 = toscalar(SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"\"\r\n| where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n//| where OS in ({OS}) or '*' in ({OS})\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| summarize percentile(CountPrompts,80));\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"\"\r\n| where AuthMethod in ({AuthMethod}) or '*' in ({AuthMethod})\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| where CountPrompts > Percentile80\r\n| order by CountPrompts desc\r\n",
+              "size": 4,
+              "showAnalytics": true,
+              "title": "Applications in 80th Percentile",
+              "timeContext": {
+                "durationMs": 604800000
+              },
+              "timeContextFromParameter": "Time",
+              "showExportToExcel": true,
+              "queryType": 0,
+              "resourceType": "microsoft.operationalinsights/workspaces",
+              "crossComponentResources": [
+                "{Workbook}"
+              ],
+              "gridSettings": {
+                "formatters": [
+                  {
+                    "columnMatch": "AppDisplayName",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "60ch"
+                    }
+                  },
+                  {
+                    "columnMatch": "CountPrompts",
+                    "formatter": 0,
+                    "formatOptions": {
+                      "customColumnWidthSetting": "18ch"
+                    }
+                  }
+                ],
+                "filter": true
+              },
+              "sortBy": []
+            },
+            "customWidth": "65",
+            "showPin": true,
+            "name": "query - 13 - Copy",
+            "styleSettings": {
+              "margin": "20px"
+            }
+          }
+        ]
+      },
+      "customWidth": "100",
+      "name": "group - 19"
+    }
+  ],
+  "defaultResourceIds": [
+    "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa/resourcegroups/woodgrove-rg/providers/microsoft.operationalinsights/workspaces/ablankloganalyticstest1",
+    "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa/resourcegroups/woodgrove-rg/providers/microsoft.operationalinsights/workspaces/woodgrove-loganalyiticsworkspace"
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}

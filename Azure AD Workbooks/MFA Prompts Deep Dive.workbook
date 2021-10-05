@@ -1,0 +1,619 @@
+{
+  "version": "Notebook/1.0",
+  "items": [
+    {
+      "type": 9,
+      "content": {
+        "version": "KqlParameterItem/1.0",
+        "parameters": [
+          {
+            "id": "fc28012c-f83f-4cea-9055-e5697ab5e382",
+            "version": "KqlParameterItem/1.0",
+            "name": "Time",
+            "type": 4,
+            "isRequired": true,
+            "value": {
+              "durationMs": 2592000000
+            },
+            "typeSettings": {
+              "selectableValues": [
+                {
+                  "durationMs": 300000
+                },
+                {
+                  "durationMs": 900000
+                },
+                {
+                  "durationMs": 1800000
+                },
+                {
+                  "durationMs": 3600000
+                },
+                {
+                  "durationMs": 14400000
+                },
+                {
+                  "durationMs": 43200000
+                },
+                {
+                  "durationMs": 86400000
+                },
+                {
+                  "durationMs": 172800000
+                },
+                {
+                  "durationMs": 259200000
+                },
+                {
+                  "durationMs": 604800000
+                },
+                {
+                  "durationMs": 1209600000
+                },
+                {
+                  "durationMs": 2419200000
+                },
+                {
+                  "durationMs": 2592000000
+                },
+                {
+                  "durationMs": 5184000000
+                },
+                {
+                  "durationMs": 7776000000
+                }
+              ]
+            },
+            "timeContext": {
+              "durationMs": 86400000
+            }
+          },
+          {
+            "id": "a73b569b-6b9a-4980-9def-c8ee8add51f0",
+            "version": "KqlParameterItem/1.0",
+            "name": "Workbook",
+            "type": 5,
+            "value": "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa/resourcegroups/woodgrove-rg/providers/microsoft.operationalinsights/workspaces/woodgrove-loganalyiticsworkspace",
+            "typeSettings": {
+              "additionalResourceOptions": []
+            }
+          },
+          {
+            "id": "3db1324f-e565-4b23-9992-46fe4ba3909d",
+            "version": "KqlParameterItem/1.0",
+            "name": "Subscription",
+            "type": 6,
+            "multiSelect": true,
+            "quote": "'",
+            "delimiter": ",",
+            "value": [
+              "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa"
+            ],
+            "typeSettings": {
+              "additionalResourceOptions": [],
+              "includeAll": false
+            }
+          }
+        ],
+        "style": "pills",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces"
+      },
+      "name": "parameters - 4"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# Analysis of MFA Prompts\r\n## Excludes Unknown, Previously Satisfied and Password Auth.  Excludes failed attempts. "
+      },
+      "name": "text - 15"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    |extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where SuccessfulSignin = true\r\n| where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"Password\"\r\n    and  AuthMethod != \"\"\r\n| summarize CountPrompts = count(AuthMethod) by UserDisplayName\r\n| summarize percentiles(CountPrompts,5,50,95)\r\n| project Percent05 = percentile_CountPrompts_5, Percent50 = percentile_CountPrompts_50, Percent95 = percentile_CountPrompts_95\r\n",
+        "size": 3,
+        "title": "MFA Prompts per user - Percentiles ",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa/resourcegroups/woodgrove-rg/providers/microsoft.operationalinsights/workspaces/woodgrove-loganalyiticsworkspace"
+        ],
+        "visualization": "table",
+        "tileSettings": {
+          "showBorder": false
+        },
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "25",
+      "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "let Percentile50 = toscalar(SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where SuccessfulSignin = true\r\n| where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"Password\"\r\n    and AuthMethod != \"\"\r\n| summarize CountPrompts = count(AuthMethod) by UserDisplayName\r\n| summarize percentile(CountPrompts,50));\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where SuccessfulSignin = true\r\n    | where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"Password\"\r\n    and AuthMethod != \"\"\r\n| summarize CountPrompts = count(AuthMethod) by UserDisplayName\r\n| where CountPrompts > Percentile50\r\n| order by CountPrompts desc\r\n",
+        "size": 0,
+        "title": "Users with higher than average MFA prompt count ",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ]
+      },
+      "customWidth": "25",
+      "name": "query - 13"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    |extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where SuccessfulSignin = true\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"Password\"\r\n    and  AuthMethod != \"\"\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| summarize percentiles(CountPrompts,5,50,95)\r\n| project Percent05 = percentile_CountPrompts_5, Percent50 = percentile_CountPrompts_50, Percent95 = percentile_CountPrompts_95\r\n",
+        "size": 3,
+        "title": "MFA Prompts per App - Percentiles ",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "table",
+        "tileSettings": {
+          "showBorder": false
+        },
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "25",
+      "name": "query - 0 - Copy - Copy - Copy - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "\r\nlet Percentile50 = toscalar(SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where SuccessfulSignin = true\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"Password\"\r\n    and AuthMethod != \"\"\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| summarize percentile(CountPrompts,50));\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where SuccessfulSignin = true\r\n|where AuthMethod != \"Previously satisfied\"\r\n    and AuthMethod != \"Password\"\r\n    and AuthMethod != \"\"\r\n| summarize CountPrompts = count(AuthMethod) by AppDisplayName\r\n| where CountPrompts > Percentile50\r\n| order by CountPrompts desc\r\n",
+        "size": 0,
+        "title": "Apps with higher than average MFA prompt count ",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ]
+      },
+      "customWidth": "25",
+      "name": "query - 13 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n| where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" and AuthMethod != \"Password\"\r\n| where SuccessfulSignin = true\r\n| summarize AuthMethCount = count() by bin (TimeGenerated, 1h), AuthMethod\r\n",
+        "size": 0,
+        "showAnalytics": true,
+        "title": "MFA Prompts Over Time",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "timechart",
+        "chartSettings": {
+          "yAxis": [
+            "AuthMethCount"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "100",
+      "showPin": true,
+      "name": "query - 0 - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "\r\nSigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" and AuthMethod != \"Password\"\r\n|where SuccessfulSignin = true\r\n| summarize AuthMethCount = count() by AuthMethod\r\n",
+        "size": 3,
+        "showAnalytics": true,
+        "title": "MFA Prompts by Authentication Method",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "gridSettings": {
+          "sortBy": [
+            {
+              "itemKey": "AuthMethCount",
+              "sortOrder": 2
+            }
+          ]
+        },
+        "sortBy": [
+          {
+            "itemKey": "AuthMethCount",
+            "sortOrder": 2
+          }
+        ],
+        "chartSettings": {
+          "xAxis": "AuthMethod",
+          "yAxis": [
+            "AuthMethCount"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "50",
+      "showPin": true,
+      "name": "query - 0 - Copy - Copy - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    |extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend Browser = ParsedFields2.browser\r\n|extend OS = tostring(OperatingSystem)\r\n|extend AuthMethod = tostring(AuthenticationMethod)\r\n|where AuthMethod != \"Previously satisfied\" and AuthMethod != \"\" and AuthMethod != \"Password\"\r\n|where SuccessfulSignin = true\r\n//|where OperatingSystem contains \"window\"\r\n|summarize Count = count() by OS\r\n",
+        "size": 3,
+        "showAnalytics": true,
+        "title": "MFA Prompts by Operating System",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "50",
+      "showPin": true,
+      "name": "query - 0 - Copy - Copy - Copy - Copy"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# ..."
+      },
+      "name": "text - 14"
+    },
+    {
+      "type": 1,
+      "content": {
+        "json": "# Analysis of All Authentication Methods\r\n## Excludes only failed attempts and Unkown Auth Methods\r\n"
+      },
+      "customWidth": "100",
+      "name": "text - 13"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod) \r\n    //|extend ParsedFields2=parse_json(DeviceDetail)\r\n    //|extend OperatingSystem = ParsedFields2.operatingSystem\r\n    //|extend Browser = ParsedFields2.browser\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n//|where OperatingSystem contains \"window\"\r\n|summarize Count = count() by AuthMethod",
+        "size": 3,
+        "showAnalytics": true,
+        "title": "Prompts by Authentication Method",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "50",
+      "showPin": true,
+      "name": "query - 0"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded   \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    //|extend Browser = ParsedFields2.browser\r\n    |extend OS = tostring(OperatingSystem)\r\n    |extend AuthMethod = tostring(AuthenticationMethod)\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n//|where OperatingSystem contains \"window\"\r\n|summarize Count = count() by OS",
+        "size": 3,
+        "showAnalytics": true,
+        "title": "Prompts by OS",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "30",
+      "showPin": true,
+      "name": "query - 0 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod) \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n    //|extend Browser = ParsedFields2.browser\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n|where OperatingSystem contains \"window\"\r\n|summarize Count = count() by AuthMethod",
+        "size": 0,
+        "title": "Auth Methods for Windows OS",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "30",
+      "name": "query - 0 - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod) \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n    //|extend Browser = ParsedFields2.browser\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n|where OperatingSystem contains \"Mac\"\r\n|summarize Count = count() by AuthMethod",
+        "size": 0,
+        "title": "Auth Methods for MacOS",
+        "timeContext": {
+          "durationMs": 2592000000
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "30",
+      "name": "query - 0 - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod) \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n    //|extend Browser = ParsedFields2.browser\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n|where OperatingSystem contains \"ios\"\r\n|summarize Count = count() by AuthMethod",
+        "size": 0,
+        "title": "Auth Methods for iOS",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "30",
+      "name": "query - 0 - Copy - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod) \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n    //|extend Browser = ParsedFields2.browser\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n|where OperatingSystem contains \"android\"\r\n|summarize Count = count() by AuthMethod",
+        "size": 0,
+        "title": "Auth Methods for Android",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "30",
+      "name": "query - 0 - Copy - Copy"
+    },
+    {
+      "type": 3,
+      "content": {
+        "version": "KqlItem/1.0",
+        "query": "SigninLogs\r\n|mv-expand ParsedFields=parse_json(AuthenticationDetails)\r\n    //|extend AuthenticationStepDateTime = ParsedFields.authenticationStepDateTime\r\n    |extend AuthenticationMethod = ParsedFields.authenticationMethod\r\n    //|extend AuthenticationStepResultDetail = ParsedFields.authenticationStepResultDetail\r\n    //|extend AuthenticationStepRequirement = ParsedFields.authenticationStepRequirement\r\n    |extend SuccessfulSignin = ParsedFields.succeeded\r\n    |extend AuthMethod = tostring(AuthenticationMethod) \r\n    |extend ParsedFields2=parse_json(DeviceDetail)\r\n    |extend OperatingSystem = ParsedFields2.operatingSystem\r\n    |extend OS = tostring(OperatingSystem)\r\n    //|extend Browser = ParsedFields2.browser\r\n|where AuthMethod != \"\" \r\n|where SuccessfulSignin = true\r\n|where OS !has \"ios\"\r\n|where OS !has \"mac\"\r\n|where OS !has \"windows\"\r\n|where OS !has \"anroid\"\r\n|summarize Count = count() by AuthMethod",
+        "size": 0,
+        "title": "Auth Methods for Other or Blank",
+        "timeContext": {
+          "durationMs": 0
+        },
+        "timeContextFromParameter": "Time",
+        "queryType": 0,
+        "resourceType": "microsoft.operationalinsights/workspaces",
+        "crossComponentResources": [
+          "{Workbook}"
+        ],
+        "visualization": "piechart",
+        "chartSettings": {
+          "yAxis": [
+            "Count"
+          ],
+          "ySettings": {
+            "numberFormatSettings": {
+              "unit": 0,
+              "options": {
+                "style": "decimal",
+                "useGrouping": true
+              }
+            }
+          }
+        }
+      },
+      "customWidth": "30",
+      "name": "query - 0 - Copy - Copy - Copy - Copy"
+    }
+  ],
+  "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
+}
