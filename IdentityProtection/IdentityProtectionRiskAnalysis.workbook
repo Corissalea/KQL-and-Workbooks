@@ -35,10 +35,7 @@
             "timeContext": {
               "durationMs": 0
             },
-            "timeContextFromParameter": "TimeRange",
-            "value": [
-              "/subscriptions/ab48f397-fc82-4634-aa52-62dd91b3ebaa/resourcegroups/woodgrove-rg/providers/microsoft.operationalinsights/workspaces/woodgrove-loganalyiticsworkspace"
-            ]
+            "timeContextFromParameter": "TimeRange"
           },
           {
             "id": "14270858-14b9-4fa7-8375-d7d583fcfc9f",
@@ -58,14 +55,8 @@
             "name": "Time",
             "type": 4,
             "isRequired": true,
-            "value": {
-              "durationMs": 2419200000
-            },
             "typeSettings": {
               "selectableValues": [
-                {
-                  "durationMs": 300000
-                },
                 {
                   "durationMs": 3600000
                 },
@@ -76,19 +67,17 @@
                   "durationMs": 604800000
                 },
                 {
-                  "durationMs": 2419200000
-                },
-                {
                   "durationMs": 2592000000
                 },
                 {
                   "durationMs": 5184000000
-                },
-                {
-                  "durationMs": 7776000000
                 }
               ],
               "allowCustom": true
+            },
+            "timeContextFromParameter": "TimeRange",
+            "value": {
+              "durationMs": 5184000000
             }
           }
         ],
@@ -145,7 +134,7 @@
                     "size": 3,
                     "showAnalytics": true,
                     "timeContext": {
-                      "durationMs": 604800000
+                      "durationMs": 5184000000
                     },
                     "timeContextFromParameter": "Time",
                     "showExportToExcel": true,
@@ -203,7 +192,7 @@
               "showAnalytics": true,
               "title": "Hourly Risk Detections - Offline vs. Real Time",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -247,7 +236,7 @@
               "showAnalytics": true,
               "title": "Total Count - Offline vs. Real Time",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -380,7 +369,7 @@
               "showAnalytics": true,
               "title": "Hourly Risk Detections by Level",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -427,7 +416,7 @@
               "showAnalytics": true,
               "title": "Total Count by Risk Level",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -474,7 +463,7 @@
               "showAnalytics": true,
               "title": "Hourly Risk Detections Event Type",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -535,7 +524,7 @@
               "showAnalytics": true,
               "title": "Total Count by Risk Event Type",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -574,10 +563,12 @@
                   },
                   {
                     "seriesName": "anonymizedIPAddress",
+                    "label": "Anonymized IP Address",
                     "color": "pink"
                   },
                   {
                     "seriesName": "mcasImpossibleTravel",
+                    "label": "MCAS Impossible Travel",
                     "color": "magenta"
                   }
                 ]
@@ -595,7 +586,7 @@
               "size": 3,
               "title": "Count of Risk Detections by User",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -646,7 +637,7 @@
               "size": 0,
               "title": "Risk Detections by IP Address",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -779,7 +770,7 @@
               "title": "Daily Count of Users by Risk Level",
               "color": "turquoise",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "queryType": 0,
@@ -832,7 +823,7 @@
               "title": "Total Count of Users by Risk Level",
               "color": "turquoise",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "queryType": 0,
@@ -909,7 +900,7 @@
               "showAnalytics": true,
               "title": "Action taken on Risky Users",
               "timeContext": {
-                "durationMs": 0
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "queryType": 0,
@@ -983,7 +974,7 @@
               "title": "High Risk Users by Time Generated",
               "color": "red",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "queryType": 0,
@@ -1011,7 +1002,7 @@
               "title": "Medium Risk Users by Time Generated",
               "color": "red",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "queryType": 0,
@@ -1054,7 +1045,7 @@
               "size": 3,
               "title": "Summary of Risk Detections by Risk Level",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "queryType": 0,
@@ -1097,7 +1088,7 @@
               "title": "Summary of Risky Users by Risk Level",
               "color": "red",
               "timeContext": {
-                "durationMs": 604800000
+                "durationMs": 5184000000
               },
               "timeContextFromParameter": "Time",
               "showExportToExcel": true,
@@ -1121,6 +1112,5 @@
       "name": "group - 17"
     }
   ],
-  "fromTemplateId": "community-Workbooks/Azure Active Directory Conditional Access/Conditional Access Insights and Reporting",
   "$schema": "https://github.com/Microsoft/Application-Insights-Workbooks/blob/master/schema/workbook.json"
 }
