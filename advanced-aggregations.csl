@@ -1,0 +1,464 @@
+//------------------------------------------------------------------------------
+// Kusto Query Language (KQL) From Scratch
+// Module 4 - Advanced Aggregations
+//
+// The demos in this module serve as a very basic introduction to the KQL
+// language within the Azure Log Analytics environment. 
+//
+// Copyright (c) 2018. Microsoft, Pluralsight, Robert C. Cain. 
+// All rights reserved. This code may be used in part within your own
+// applications. 
+//
+// This code may NOT be redistributed in it's entirely without permission
+// of one of it's copyright holders. 
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// arg_max / arg_min
+//------------------------------------------------------------------------------
+
+// arg_max finds the maximum value for the column being summarized on, and 
+// returns the row where that maximum value was found
+Perf
+| summarize arg_max(CounterValue, *) by CounterName
+| sort by CounterName asc
+
+
+// The second parameter indicates which columns to return. * means all.
+// By default it always returns the "by" column and the maximized value. 
+// 
+Perf
+| summarize arg_max(CounterValue, Computer, ObjectName) by CounterName
+| sort by CounterName asc
+
+
+// arg_min does the same except, of course, finding the minimum value for 
+// the column being summarized on, and returning rows where that min
+// value was found
+Perf
+| project CounterName, CounterValue 
+| summarize arg_min(CounterValue, *) by CounterName
+| sort by CounterName asc
+
+
+//------------------------------------------------------------------------------
+// Makeset / Makelist
+//------------------------------------------------------------------------------
+
+// Makeset - Creates a array of json objects by flattening a heirarcy. 
+Perf
+| summarize Counters = makeset(CounterName) by ObjectName
+
+
+// Somthing more useful, getting a list of PCs low on disk space.
+Perf
+| where CounterName == "% Free Space"
+    and CounterValue <= 30
+| summarize Computers = makeset(Computer)
+
+// We'll see examples of how to use these sets in the next module, 
+// Working with Datasets. 
+
+// Makelist - Similar to makeset, but duplicates are not removed
+Perf
+| where CounterName == "% Free Space"
+    and CounterValue <= 30
+| summarize Computers = makelist(Computer)
+
+// Note that makeset and makelist have an optional second parameter that
+// sets the max size of the returned list, which by default is 128
+Perf
+| where CounterName == "% Free Space"
+    and CounterValue <= 30
+| summarize Computers = makelist(Computer, 256)
+
+
+//------------------------------------------------------------------------------
+// mvexpand
+//------------------------------------------------------------------------------
+
+// mvexpand takes a dynamic value (like a set or list) and converts it back
+// into individual rows
+Perf
+| where CounterName == "% Free Space"
+    and CounterValue <= 30
+| summarize Computers = makeset(Computer)
+| mvexpand Computers
+
+
+SecurityAlert
+| extend ExtProps=todynamic(ExtendedProperties)
+| mvexpand ExtProps
+| project TimeGenerated 
+        , DisplayName 
+        , AlertName 
+        , AlertSeverity 
+        , ExtProps 
+
+//------------------------------------------------------------------------------
+// Percentiles
+//------------------------------------------------------------------------------
+
+// Percentiles calculates the value that is greater than x% of the sampleset. 
+// Here, it shows the CounterValue that is higher than 5% of the other 
+// values in the group, then the value that is greater than 50% of the 
+// incoming data, and finally a value that is greater than 95% of the data.
+Perf
+| where CounterName == "Available MBytes"
+| summarize percentiles(CounterValue, 5, 50, 95) by Computer
+
+// if this is one output row:
+// Computer       percentile_CounterValue_5  percentile_CounterValue_50  percentile_CounterValue_95
+// ContosoWebVM1             629.7383905746            2,605.4022856667           12,539.1563912150
+
+// Of all of the performance counter records for computer ContosoWebVM1 in the time range,
+// 5%  of the records show available disk space of    629.7383905746 or less
+// 50% of the records show available disk space of  2,605.4022856667 or less
+// 95% of the records show available disk space of 12,539.1563912150 or less
+
+// If, for example, we say that less than 1,000MB is a condition to be concerned
+// over, then only 5% of our records show we fall below this amount. At least
+// 50% of the records show we are OK (in other words > 1,000 MB)
+
+
+// You can rename the columns if you need to using project-rename
+Perf
+| where CounterName == "Available MBytes"
+| summarize percentiles(CounterValue, 5, 50, 95) by Computer
+| project-rename Percent05 = percentile_CounterValue_5
+               , Percent50 = percentile_CounterValue_50 
+               , Percent95 = percentile_CounterValue_95 
+
+
+// Or you can rename in the summarize call
+Perf
+| where CounterName == "Available MBytes"
+| summarize (Percent05, Percent50, Percent95) 
+          = percentiles(CounterValue, 5, 50, 95) 
+         by Computer
+
+
+// You can set your own percentile levels
+Perf
+| where CounterName == "Available MBytes"
+| summarize percentiles(CounterValue, 10, 30, 50, 70, 90) by CounterName
+| sort by CounterName asc
+
+
+// You can also return the data as a single column array using percentiles_array
+Perf
+| summarize percentiles_array(CounterValue, 5, 50, 95) by CounterName
+
+
+// And then pivot the data so instead of coming back as columns, they
+// now appear as rows
+Perf
+| summarize percentarray = percentiles_array(CounterValue, 5, 50, 95) by CounterName
+| mvexpand percentarray
+
+
+//------------------------------------------------------------------------------
+// dcount
+//------------------------------------------------------------------------------
+
+// dcount returnes an ESTIMATED number of DISTINCT rows, as opposed to counting
+// on a distinct dataset, which is always accurate but slow. As a result dcount 
+// calculates faster especially over a very large dataset. 
+
+// Security events have an id that describes the type of event
+SecurityEvent 
+| distinct EventID, Activity
+
+// For comparison, count the different types of security events that occured
+// to a computer in the recent past
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| distinct Computer, EventID
+| summarize EventTypeCount = count(EventID) by Computer
+| sort by Computer asc
+
+
+// Now we can use dcount to get an estimate of these
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcount(EventID) by Computer
+| sort by Computer asc
+
+
+// A second parameter lets you set the accuracy level
+// 0 = Least accurate, 1.6% error
+// 1 = Default, balances accuracy and time, 0.8% error level
+// 2 = Accurate but slow, 0.4% error
+// 3 = Extra accurate but slowest, 0.28% error level
+
+
+// 0 = Least accurate, 1.6% error
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcount(EventID, 0) by Computer
+| sort by Computer asc
+
+
+// 1 = Default, balances accuracy and time, 0.8% error level
+// (Same as not using the second parameter in the first example)
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcount(EventID, 1) by Computer
+| sort by Computer asc
+
+
+// 2 = Accurate but slow, 0.4% error
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcount(EventID, 2) by Computer
+| sort by Computer asc
+
+
+// 3 = Extra accurate but slowest, 0.28% error level
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcount(EventID, 3) by Computer
+| sort by Computer asc
+
+
+//------------------------------------------------------------------------------
+// dcountif
+//------------------------------------------------------------------------------
+
+// dcountif is similar to dcount, except it allows you to embed an if condition
+// within the function call
+
+// Here we are only looking for EventIDs in a specific list
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcountif( EventID
+                    , EventID in (4625, 4688, 4624, 4672, 4670, 4689, 4634, 4674)
+                    ) 
+         by Computer
+| sort by Computer asc
+
+
+// dcountif has a similar accuracy switch as dcount, although it omits level 3
+// 0 = Least accurate, 1.6% error
+// 1 = Default, balances accuracy and time, 0.8% error level
+// 2 = Accurate but slow, 0.4% error
+
+// 0 = Least accurate, 1.6% error
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcountif( EventID
+                    , EventID in (4625, 4688, 4624, 4672, 4670, 4689, 4634, 4674)
+                    , 0
+                    ) 
+         by Computer
+| sort by Computer asc
+
+
+// 1 = Default, balances accuracy and time, 0.8% error level
+// (Same as not using it)
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcountif( EventID
+                    , EventID in (4625, 4688, 4624, 4672, 4670, 4689, 4634, 4674)
+                    , 1
+                    ) 
+         by Computer
+| sort by Computer asc
+
+
+// 2 = Accurate but slow, 0.4% error
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| summarize dcountif( EventID
+                    , EventID in (4625, 4688, 4624, 4672, 4670, 4689, 4634, 4674)
+                    , 2
+                    ) 
+         by Computer
+| sort by Computer asc
+
+
+// For comparison, here is a similar version using count
+SecurityEvent
+| where TimeGenerated >= ago(90d)
+| distinct Computer, EventID
+| summarize EventTypeCount = countif( EventID in ( 4625, 4688, 4624, 4672
+                                                 , 4670, 4689, 4634, 4674
+                                                 )
+                                    ) by Computer
+| sort by Computer asc
+
+
+//------------------------------------------------------------------------------
+// countif
+//------------------------------------------------------------------------------
+
+// Like dcountif, countif allows you to add a filter condition.
+Perf 
+| summarize RowCount = countif(CounterName contains "Bytes") by CounterName
+| sort by CounterName asc
+
+
+// Similar query without Countif, note that rows with a 0 count are suppressed
+Perf 
+| where CounterName contains "Bytes" 
+| summarize count() by CounterName
+| sort by CounterName asc
+
+
+// We can add an extra where to remove the 0 valued rows
+Perf 
+| summarize RowCount = countif(CounterName contains "Bytes") by CounterName
+| where RowCount > 0
+| sort by CounterName asc
+
+
+//------------------------------------------------------------------------------
+// pivot
+//------------------------------------------------------------------------------
+
+// Let's say you have a report of computers, the event, and how many they had
+Event
+| project Computer, EventLevelName
+| summarize count() by Computer, EventLevelName
+| sort by Computer asc, EventLevelName asc
+
+
+
+// A bit hard to read though, it'd make much more sense to have the event levels
+// come in as columns, in a spreadsheet like fashion. That's what Pivot will
+// do for you!
+Event
+| project Computer, EventLevelName 
+| evaluate pivot(EventLevelName)
+| sort by Computer asc
+
+
+//------------------------------------------------------------------------------
+// top-nested
+//------------------------------------------------------------------------------
+
+// top-nested does nested measurements. 
+
+// In this example, it first gets the top 3 ObjectNames as measured by their 
+// count. For each one of those, it gets the top 3 CounterNames, as measured
+// by their count
+Perf 
+| top-nested 3 of ObjectName by ObjectCount = count() 
+, top-nested 3 of CounterName by CounterNameCount = count() 
+| sort by ObjectName asc
+        , CounterName asc
+
+
+// You can have as many items as you want, and go to many levels
+Perf 
+| top-nested 5 of ObjectName by ObjectCount = count() 
+, top-nested 5 of CounterName by CounterNameCount = count() 
+, top-nested 5 of InstanceName by InstanceCount = count()
+| sort by ObjectName asc
+        , CounterName asc
+        , InstanceName asc
+
+
+// top-nested supports many different aggregations, including:
+// sum(), count(), max(), min(), dcount(), avg(), percentile(), percentilew(), 
+// or any algebric combination of these aggregation
+Perf 
+| top-nested 5 of ObjectName by ObjectSum = sum(CounterValue)
+, top-nested 5 of CounterName by CounterNameSum = sum(CounterValue) 
+, top-nested 5 of InstanceName by InstanceSum = sum(CounterValue)
+| sort by ObjectName asc
+        , CounterName asc
+        , InstanceName asc 
+
+
+// top-nested can also include a row for others not included in the top X
+Perf 
+| top-nested 3 of ObjectName with others = "All Other Objects" 
+          by ObjectCount = count() 
+, top-nested 3 of CounterName 
+          by CounterNameCount = count() 
+| sort by ObjectName asc
+        , CounterName asc
+
+
+// Other can be at all levels
+Perf 
+| top-nested 3 of ObjectName 
+        with others = "All Other Objects" 
+          by ObjectCount = count() 
+, top-nested 3 of CounterName 
+        with others = "All Other Counters" 
+          by CounterNameCount = count() 
+| sort by ObjectName asc
+        , CounterName asc
+
+
+// or even just at the sub levels
+Perf 
+| top-nested 3 of ObjectName 
+          by ObjectCount = count() 
+, top-nested 3 of CounterName 
+        with others = "All Other Counters" 
+          by CounterNameCount = count() 
+| sort by ObjectName asc
+        , CounterName asc
+
+
+//------------------------------------------------------------------------------
+// max / min
+//------------------------------------------------------------------------------
+
+// max is simple, it just returns the maximum value for the column being
+// passed in. 
+Perf
+| where CounterName == "Free Megabytes"
+| summarize max(CounterValue)
+
+
+// min is almost identical
+Perf
+| where CounterName == "Free Megabytes"
+| summarize min(CounterValue)
+
+// If you want to return a more complex result set with additional columns,
+// use arg_max/arg_min (shown at the top of this module's demos)
+
+//------------------------------------------------------------------------------
+// sum / sumif
+//------------------------------------------------------------------------------
+
+// Like max, sum is very simple, just returns a grand total for the indicated
+// column
+Perf
+| where CounterName == "Free Megabytes"
+| summarize sum(CounterValue)
+
+
+// sumif allows you to add your condition to the parameter list
+Perf
+| summarize sumif(CounterValue, CounterName == "Free Megabytes")
+
+
+//------------------------------------------------------------------------------
+// any
+//------------------------------------------------------------------------------
+
+// any is a random row generator. When used with an *, it returns a random
+// row from the input dataset
+Perf
+| summarize any(*)
+
+// You can also pass in a specific column name to return just that column
+Perf
+| summarize any(Computer) 
+
+// You can specify a combination of columns
+Perf
+| summarize any(ObjectName, CounterName, CounterValue)
+
+// When you use with by, it returns a random row for each distinct value
+// in the column after the by clause
+Perf
+| summarize any(*) by CounterName
+| sort by CounterName asc
+
